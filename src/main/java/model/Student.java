@@ -1,7 +1,9 @@
 package model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -16,7 +18,17 @@ class Student {
     private Date dateOfBirth;
     private List<Grade> grades;
 
-    public Student() {}
+    public Student() {
+        this.grades = new ArrayList<>();
+    }
+
+    public Student(int index, String firstName, String lastName, Date dateOfBirth) {
+        this.index = index;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.grades = new ArrayList<>();
+    }
 
     public int getIndex() {
         return index;
