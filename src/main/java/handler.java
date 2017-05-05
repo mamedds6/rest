@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Darek on 2017-04-07.
  */
 public class handler {
-    static Database database = new Database();
+    public static Database database = Database.getInstance();
 
     public static void main(String[] args) throws IOException {
 
