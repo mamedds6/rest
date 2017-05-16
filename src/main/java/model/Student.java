@@ -1,6 +1,7 @@
 package model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -10,8 +11,8 @@ import java.util.List;
  * Created by Darek on 2017-05-04.
  */
 
-public @XmlRootElement
-class Student {
+@XmlRootElement
+public class Student {
     private int index;
     private String firstName;
     private String lastName;
@@ -42,6 +43,9 @@ class Student {
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
+    public List<Grade> getListOfGrades() {
+        return grades;
+    }
 
     public void setIndex(int index) {
         this.index = index;
@@ -54,5 +58,12 @@ class Student {
     }
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+    public void setListOfGrades(List<Grade> grades) {
+        this.grades = grades;
+    }
+
+    public void addGrade(Grade grade) {
+        grades.add(grade);
     }
 }

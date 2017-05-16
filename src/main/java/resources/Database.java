@@ -1,5 +1,7 @@
 package resources;
 
+import model.Course;
+import model.Grade;
 import model.Student;
 
 import java.time.Instant;
@@ -32,14 +34,29 @@ public class Database {
         students.add(student);
     }
 
+    public boolean deleteStudent(int index) {
+        if(index<students.size())
+        {
+            students.remove(index);
+            return true;
+        }
+        return false;
+    }
+
     public Student getStudent(int index) {
-        Student student = students.get(index);
+        Student student = null;
+        if(index<students.size())
+            student = students.get(index);
         return student;
+    }
+    public List<Student> getStudents() {
+        return instance.students;
     }
 
     public void fillDatalists () {
-        students.add(new Student(3,"adada", "ad", Date.from(Instant.now())));
-        students.add(new Student(123234,"ops","drops", Date.from(Instant.now())));
+        students.add(new Student(3,"aaaaa", "atatata", Date.from(Instant.now())));
+        students.add(new Student(123234,"bbbbb","bybybyby", Date.from(Instant.now())));
+        students.get(0).addGrade(new Grade(3.5, Date.from(Instant.now()), new Course("WF","W.Fornalik")));
 
     }
 

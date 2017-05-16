@@ -9,13 +9,27 @@ import java.util.Date;
 
 @XmlRootElement
 public class Grade {
-    private float value;
+    private static final double[] gradingScale = new double[]{2.0, 3.0, 3.5, 4.0, 4.5, 5.0};
+    private double value;
     private Date date;
     private Course course;
 
     public Grade() {}
+    public Grade(double value, Date date, Course course) {
+        this.value = value;
+        this.date = date;
+        this.course = course;
+    }
 
-    public float getValue() {
+    public boolean validateValue() {
+        for(double item:gradingScale) {
+            if(item==value)
+                return true;
+        }
+        return false;
+    }
+
+    public double getValue() {
         return value;
     }
     public Date getDate() {
@@ -25,7 +39,7 @@ public class Grade {
         return course;
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         this.value = value;
     }
     public void setDate(Date date) {

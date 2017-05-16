@@ -12,6 +12,10 @@ public class Course {
     private String instructor;
 
     public Course() {}
+    public Course(String title, String instructor) {
+        this.title = title;
+        this.instructor = instructor;
+    }
 
     public String getTitle() {
         return title;

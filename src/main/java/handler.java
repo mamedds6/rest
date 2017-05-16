@@ -32,12 +32,14 @@ public class handler {
         anzy.setDateOfBirth(data);
         Student lel;// = new Student(123234,"ops","drops", Date.from(Instant.now()));
         anzy = database.students.get(1);
-        lel = database.students.get(0);
+        lel = database.getStudent(0);
 
         System.out.println(anzy.getFirstName());
         System.out.println(anzy.getDateOfBirth());
         System.out.println(lel.getFirstName());
         System.out.println(lel.getDateOfBirth());
+
+        //database.deleteStudent(20);
 
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(8080).build();
         ResourceConfig config = new ResourceConfig(StudentResource.class);
