@@ -2,6 +2,7 @@ import model.Student;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.mongodb.morphia.Datastore;
 import resources.Database;
 import resources.StudentResource;
 
@@ -22,6 +23,8 @@ public class handler {
     public static void main(String[] args) throws IOException {
 
         //Database database = new Database();
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        //datastore.fill
         database.fillDatalists();
 
         Student anzy = new Student();

@@ -1,13 +1,20 @@
 package model;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by Darek on 2017-05-04.
  */
 
+@Entity
 @XmlRootElement
 public class Course {
+    @Id
+    private ObjectId id;
     private String title;
     private String instructor;
 

@@ -3,6 +3,7 @@ package resources;
 import model.Grade;
 import model.Student;
 import org.glassfish.grizzly.http.server.util.StringParser;
+import org.mongodb.morphia.Datastore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -25,6 +26,7 @@ public class StudentResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<Student> getStudents() {
+       // Datastore datastore = Datastoreh
         List<Student> students = Database.getInstance().getStudents();
         return students;
     }
