@@ -1,5 +1,6 @@
 package model;
 
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Reference;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,7 +10,7 @@ import java.util.Date;
  * Created by Darek on 2017-05-04.
  */
 
-//@Embedded ???
+//@Embedded
 @XmlRootElement
 public class Grade {
     private static final double[] gradingScale = new double[]{2.0, 3.0, 3.5, 4.0, 4.5, 5.0};

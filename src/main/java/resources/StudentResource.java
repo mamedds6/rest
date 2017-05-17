@@ -1,8 +1,8 @@
 package resources;
 
+import utilities.DatastoreHandler;
 import model.Grade;
 import model.Student;
-import org.glassfish.grizzly.http.server.util.StringParser;
 import org.mongodb.morphia.Datastore;
 
 import javax.validation.Valid;
@@ -13,8 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,8 +24,9 @@ public class StudentResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<Student> getStudents() {
-       // Datastore datastore = Datastoreh
-        List<Student> students = Database.getInstance().getStudents();
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        //List<Student> students = Database.getInstance().getStudents();
+        List<Student> students = datastore.find(Student.class).asList();
         return students;
     }
 
@@ -35,7 +34,9 @@ public class StudentResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response postStudent(@NotNull @Valid Student student, @Context UriInfo uriInfo) {
-        Database.getInstance().addStudent(student);
+        //Database.getInstance().addStudent(student);
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        //datastore
         String newIndex = String.valueOf(student.getIndex());
         //na pewno źle, trzeba ten jednoznaczny indeks dodac
         return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+newIndex)).entity(student).build();
@@ -45,7 +46,10 @@ public class StudentResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getStudent(@PathParam("index") int index) {
-        Student student = Database.getInstance().getStudent(index);
+        //Student student = Database.getInstance().getStudent(index);
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        //Student student = datastore.find();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
         return Response.ok(student).build();
     }
