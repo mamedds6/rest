@@ -26,7 +26,7 @@ public class handler {
 
         DatastoreHandler datastoreHandler = DatastoreHandler.getInstance();
         Datastore datastore = datastoreHandler.getDatastore();
-        //datastoreHandler.fillDatastore();
+        datastoreHandler.fillDatastore();
 
 
 //        Student anzy = new Student();
@@ -53,6 +53,5 @@ public class handler {
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config);
         server.start();
         System.out.println("Server OK");
-
-    }
+}
 }

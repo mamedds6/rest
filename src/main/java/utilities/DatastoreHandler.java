@@ -25,8 +25,8 @@ public class DatastoreHandler {
         final Morphia morphia = new Morphia();
         morphia.mapPackage("model");
         MongoClient client = new MongoClient("localhost", 8004);
-        //MongoDatabase db = client.getDatabase("rest");
-        //db.drop();
+        MongoDatabase db = client.getDatabase("rest");
+        db.drop();
         datastore = morphia.createDatastore(client, "rest");
         datastore.ensureIndexes();
     }

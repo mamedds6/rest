@@ -1,10 +1,12 @@
 package model;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
+import utilities.DatastoreHandler;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -32,15 +34,20 @@ public class Student {
     @Embedded
     private List<Grade> grades;
 
-    public Student() {
-        this.grades = new ArrayList<>();
-    }
+    public Student() { }
+
     public Student(int index, String firstName, String lastName, Date dateOfBirth) {
-        this.index = index;
+        this.index = index; //giveIndex();
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.grades = new ArrayList<>();
+    }
+
+    public void giveIndex() {
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        int maxIndex = datastore.find(Student.class).order("-index").get().getIndex();
+        index = 1 + maxIndex;
     }
 
     public int getIndex() {

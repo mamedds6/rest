@@ -54,9 +54,9 @@ public class Database {
     }
 
     public void fillDatalists () {
-        students.add(new Student(3,"aaaaa", "atatata", Date.from(Instant.now())));
-        students.add(new Student(123234,"bbbbb","bybybyby", Date.from(Instant.now())));
-        students.get(0).addGrade(new Grade(3.5, Date.from(Instant.now()), new Course("WF","W.Fornalik")));
+        //students.add(new Student("aaaaa", "atatata", Date.from(Instant.now())));
+        //students.add(new Student("bbbbb","bybybyby", Date.from(Instant.now())));
+        //students.get(0).addGrade(new Grade(3.5, Date.from(Instant.now()), new Course("WF","W.Fornalik")));
 
     }
 

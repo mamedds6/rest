@@ -25,21 +25,19 @@ public class StudentResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<Student> getStudents() {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        //List<Student> students = Database.getInstance().getStudents();
-        List<Student> students = datastore.find(Student.class).asList();
+        List<Student> students = datastore.find(Student.class).order("index").asList();
         return students;
     }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response postStudent(@NotNull @Valid Student student, @Context UriInfo uriInfo) {
-        //Database.getInstance().addStudent(student);
+    public Response postStudent( Student student, @Context UriInfo uriInfo) {
+        student.giveIndex();
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        //datastore
+        datastore.save(student);
         String newIndex = String.valueOf(student.getIndex());
-        //na pewno źle, trzeba ten jednoznaczny indeks dodac
-        return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+newIndex)).entity(student).build();
+        return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+"/"+newIndex)).entity(student).build();
     }
 
     @Path("/{index}")
@@ -49,7 +47,6 @@ public class StudentResource {
         //Student student = Database.getInstance().getStudent(index);
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-        //Student student = datastore.find();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
         return Response.ok(student).build();
     }
@@ -59,12 +56,16 @@ public class StudentResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response putStudent(@PathParam("index") int index,@NotNull @Valid Student updStudent) {
-        Student student = Database.getInstance().getStudent(index);
+        //Student student = Database.getInstance().getStudent(index);
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+
         if(updStudent.getFirstName() != null) { student.setFirstName(updStudent.getFirstName()); }
         if(updStudent.getLastName() != null) { student.setLastName(updStudent.getLastName()); }
-        if(updStudent.getIndex() != 0) { student.setIndex(updStudent.getIndex()); }
         if(updStudent.getDateOfBirth() != null) { student.setDateOfBirth(updStudent.getDateOfBirth()); }
+        datastore.delete(student);
+        datastore.save(student);
         return Response.ok(student).build();
     }
 
@@ -72,8 +73,11 @@ public class StudentResource {
     @DELETE
     @Produces({MediaType.TEXT_PLAIN})
     public Response deleteStudent(@PathParam("index") int index) {
-        if(!Database.getInstance().deleteStudent(index))
-            return Response.noContent().status(Response.Status.NOT_FOUND).build();
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+
+        datastore.delete(student);
         String message = "Student " + index + " deleted";
         return Response.ok(message).build();
     }
@@ -82,8 +86,10 @@ public class StudentResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response getStudentsGrades(@PathParam("index") int index) {
-        Student student = Database.getInstance().getStudent(index);
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+
         List<Grade> studentsGrades = student.getListOfGrades();
         return Response.ok(studentsGrades).build();
     }
