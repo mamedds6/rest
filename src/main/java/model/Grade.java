@@ -1,13 +1,10 @@
 package model;
 
-import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Reference;
-import utilities.DatastoreHandler;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -18,14 +15,15 @@ import java.util.Date;
 @XmlRootElement
 public class Grade {
     private static final double[] gradingScale = new double[]{2.0, 3.0, 3.5, 4.0, 4.5, 5.0};
-    private static int counter = 1; //hehe // no bo ciezko wyciagnac max wartosc id...
-    private int id;
+    private static int counter = 1; //hehe // no bo ciezko wyciagnac max wartosc gradeId...
+    private int gradeId;
     private double value;
     private Date date;
     @Reference
     private Course course;
 
     public Grade() {
+        date = Date.from(Instant.now());
     }
     public Grade(double value, Date date, Course course) {
         giveId();
@@ -34,7 +32,7 @@ public class Grade {
         this.course = course;
     }
     public void giveId() {
-        id = counter;
+        gradeId = counter;
         counter++;
     }
 
@@ -46,8 +44,8 @@ public class Grade {
         return false;
     }
 
-    public int getId() {
-        return id;
+    public int getGradeId() {
+        return gradeId;
     }
     public double getValue() {
         return value;
@@ -59,8 +57,8 @@ public class Grade {
         return course;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setGradeId(int gradeId) {
+        this.gradeId = gradeId;
     }
     public void setValue(double value) {
         this.value = value;

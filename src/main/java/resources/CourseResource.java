@@ -4,6 +4,7 @@ import model.Grade;
 import model.Student;
 import model.Course;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
 import utilities.DatastoreHandler;
 
 import javax.validation.Valid;
@@ -14,82 +15,106 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Darek on 2017-05-04.
  */
 
-@Path("course")
+@Path("courses")
 public class CourseResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<Student> getStudents() {
+    public List<Course> getCourses() {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        List<Student> students = datastore.find(Student.class).order("index").asList();
-        return students;
+        List<Course> courses = datastore.find(Course.class).order("courseId").asList();
+        return courses;
     }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response postStudent( Student student, @Context UriInfo uriInfo) {
-        student.giveIndex();
+    public Response postcourse( Course course, @Context UriInfo uriInfo) {
+        course.giveCourseId();
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        datastore.save(student);
-        String newIndex = String.valueOf(student.getIndex());
-        return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+"/"+newIndex)).entity(student).build();
+        datastore.save(course);
+        String newIndex = String.valueOf(course.getCourseId());
+        return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+"/"+newIndex)).entity(course).build();
     }
 
-    @Path("/{index}")
+    @Path("/{courseId}")
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getStudent(@PathParam("index") int index) {
+    public Response getCourse(@PathParam("courseId") int courseId) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-        return Response.ok(student).build();
+        Course course = datastore.createQuery(Course.class).field("courseId").equal(courseId).get();
+        if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        return Response.ok(course).build();
     }
 
-    @Path("/{index}")
+    @Path("/{courseId}")
     @PUT
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response putStudent(@PathParam("index") int index,@NotNull @Valid Student updStudent) {
+    public Response putCourse(@PathParam("courseId") int courseId,@NotNull @Valid Course updCourse) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        Course course = datastore.createQuery(Course.class).field("courseId").equal(courseId).get();
+        if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
 
-        if(updStudent.getFirstName() != null) { student.setFirstName(updStudent.getFirstName()); }
-        if(updStudent.getLastName() != null) { student.setLastName(updStudent.getLastName()); }
-        if(updStudent.getDateOfBirth() != null) { student.setDateOfBirth(updStudent.getDateOfBirth()); }
-        datastore.delete(student);
-        datastore.save(student);
-        return Response.ok(student).build();
+        if(updCourse.getTitle() != null) { course.setTitle(updCourse.getTitle()); }
+        if(updCourse.getInstructor() != null) { course.setInstructor(updCourse.getInstructor()); }
+        datastore.delete(course);
+        datastore.save(course);
+        return Response.ok(course).build();
     }
 
-    @Path("/{index}")
+    @Path("/{courseId}")
     @DELETE
     @Produces({MediaType.TEXT_PLAIN})
-    public Response deleteStudent(@PathParam("index") int index) {
+    public Response deleteCourse(@PathParam("courseId") int courseId) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        Course course = datastore.createQuery(Course.class).field("courseId").equal(courseId).get();
+        if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
 
-        datastore.delete(student);
-        String message = "Student " + index + " deleted";
+        List<Student> allStudents = datastore.find(Student.class).asList();
+        for (Student stud:allStudents) {
+            List<Grade> allGrades = stud.getListOfGrades();
+            for (Grade grad:allGrades) {
+                if(grad.getCourse().getCourseId() == courseId)
+                {
+                    stud.getListOfGrades().remove(grad);
+                    datastore.delete(stud);
+                    datastore.save(stud);
+                }
+            }
+        }
+
+        datastore.delete(course);
+
+        String message = "Course " + course.getTitle() + " deleted";
         return Response.ok(message).build();
     }
 
-    @Path("/{index}/grades")
+    @Path("/{courseId}/grades") ///// DO POPRAWIENIA
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getXxXStudentsGrades(@PathParam("index") int index) {
+    public Response getCoursesGrades(@PathParam("courseId") int courseId) { ///zmienic z response na List<>
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        Course course = datastore.createQuery(Course.class).field("courseId").equal(courseId).get();
+        if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
 
-        List<Grade> studentsGrades = student.getListOfGrades();
-        return Response.ok(studentsGrades).build();
+        List<Grade> grades = new ArrayList<>();
+        List<Student> allStudents = datastore.find(Student.class).asList();
+        for (Student stud:allStudents) {
+            List<Grade> allGrades = stud.getListOfGrades();
+            for (Grade grad:allGrades) {
+                if(grad.getCourse().getCourseId() == courseId)
+                {
+                    grades.add(grad);
+                }
+            }
+        }
+        return Response.ok(grades).build();
     }
 }

@@ -39,9 +39,9 @@ public class DatastoreHandler {
         final Student studentA = new Student(1,"Andrzej", "Adamski", Date.from(Instant.now()));
         final Student studentB = new Student(2,"Barbara", "Bulwa", Date.from(Instant.now()));
         final Student studentC = new Student(3,"Cezary", "Całka", Date.from(Instant.now()));
-        final Course courseA = new Course("Algebra", "A.Alfonso");
-        final Course courseB = new Course("BHP", "B.Boruch");
-        final Course courseC = new Course("Chemia", "C.Curie");
+        final Course courseA = new Course(1,"Algebra", "A.Alfonso");
+        final Course courseB = new Course(2,"BHP", "B.Boruch");
+        final Course courseC = new Course(3,"Chemia", "C.Curie");
         studentA.addGrade( new Grade(3.5,Date.from(Instant.now()),courseA));
         studentA.addGrade( new Grade(4.5,Date.from(Instant.now()),courseB));
         studentB.addGrade( new Grade(2.0,Date.from(Instant.now()),courseB));

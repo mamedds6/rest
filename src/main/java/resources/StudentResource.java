@@ -80,14 +80,14 @@ public class StudentResource {
         return Response.ok(message).build();
     }
 
-//    @Path("/{index}/grades")
-//    @GET
-//    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-//    public List<Grade> getXxXStudentsGrades(@PathParam("index") int index) {
-//        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-//        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-//        //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-//        //List<Grade> studentsGrades = student.getListOfGrades();
-//        return student.getListOfGrades();
-//    }
+    @Path("/{index}/grades")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public List<Grade> getStudentsGrades(@PathParam("index") int index) {
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        //List<Grade> studentsGrades = student.getListOfGrades();
+        return student.getListOfGrades();
+    }
 }
