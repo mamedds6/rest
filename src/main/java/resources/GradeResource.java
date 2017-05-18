@@ -25,22 +25,25 @@ import java.util.List;
 public class GradeResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<Grade> getGrades(@PathParam("index") int index, @PathParam("courseId") int courseId) {
+    public Response getGrades(@PathParam("index") int index, @PathParam("courseId") int courseId) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        if(student.getListOfGrades()==null) { return Response.noContent().build();}
         List<Grade> allGrades = student.getListOfGrades();
         List<Grade> specificGrades = new ArrayList<>();
         for (Grade grade:allGrades) {
             if(grade.getCourse().getCourseId() == courseId)
                 specificGrades.add(grade);
         }
-        return specificGrades; // na Response zmienic??
+        if(specificGrades==null) { return Response.noContent().build();}
+        return Response.ok(specificGrades).build();
     }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response postGrade(Grade grade, @PathParam("index") int index, @PathParam("courseId") int courseId, @Context UriInfo uriInfo) {
+        if(!grade.validateValue()) { return Response.status(Response.Status.BAD_REQUEST).build(); }
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
@@ -50,6 +53,7 @@ public class GradeResource {
         grade.giveId();
         grade.setCourse(course);
         student.addGrade(grade);
+        datastore.delete(student);////
         datastore.save(student);
         String newId = String.valueOf(grade.getGradeId());
         return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+"/"+newId)).entity(grade).build();
@@ -59,13 +63,16 @@ public class GradeResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getGrade(@PathParam("index") int index, @PathParam("courseId") int courseId, @PathParam("gradeId") int gradeId) {
-//        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-//        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-//        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-//        Course course = datastore.createQuery(Course.class).field("courseId").equal(courseId).get();
-//        if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-//        Grade grade = student.getListOfGrades().get(gradeId);
-        List<Grade> specificGrades = getGrades(index,courseId);
+        //List<Grade> specificGrades = getGrades(index,courseId);// a bo sie typ odpowiedzi zmienil
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        if(student.getListOfGrades()==null) { return Response.noContent().build();}
+        List<Grade> allGrades = student.getListOfGrades();
+        List<Grade> specificGrades = new ArrayList<>();
+        for (Grade grade:allGrades) {
+            if(grade.getCourse().getCourseId() == courseId)
+                specificGrades.add(grade);
+        }
         for (Grade grade:specificGrades) {
             if(grade.getGradeId()==gradeId)
                 return Response.ok(grade).build();
@@ -78,6 +85,7 @@ public class GradeResource {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response putGrade(@PathParam("index") int index, @PathParam("courseId") int courseId, @PathParam("gradeId") int gradeId, @NotNull @Valid Grade updGrade) {
+        if(!updGrade.validateValue()) { return Response.status(Response.Status.BAD_REQUEST).build(); }
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         List<Grade> allGrades = student.getListOfGrades();

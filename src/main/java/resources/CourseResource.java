@@ -80,6 +80,7 @@ public class CourseResource {
         List<Student> allStudents = datastore.find(Student.class).asList();
         for (Student stud:allStudents) {
             List<Grade> allGrades = stud.getListOfGrades();
+            if(allGrades==null) continue;
             for (Grade grad:allGrades) {
                 if(grad.getCourse().getCourseId() == courseId)
                 {
