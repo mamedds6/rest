@@ -1,9 +1,9 @@
 package resources;
 
-import utilities.DatastoreHandler;
 import model.Grade;
 import model.Student;
 import org.mongodb.morphia.Datastore;
+import utilities.DatastoreHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,35 +19,39 @@ import java.util.List;
  * Created by Darek on 2017-05-04.
  */
 
-@Path("students")
-public class StudentResource {
+@Path("students/{index}/grades")
+public class GradeResource {
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<Student> getStudents() {
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public List<Grade> getStudentsGrades(@PathParam("index") int index) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        List<Student> students = datastore.find(Student.class).order("index").asList();
-        return students;
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        return student.getListOfGrades();
     }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response postStudent( Student student, @Context UriInfo uriInfo) {
-        student.giveIndex();
-        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        datastore.save(student);
-        String newIndex = String.valueOf(student.getIndex());
-        return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+"/"+newIndex)).entity(student).build();
-    }
-
-    @Path("/{index}")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getStudent(@PathParam("index") int index) {
+    public Response postGrade(Grade grade, @PathParam("index") int index, @Context UriInfo uriInfo) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-        return Response.ok(student).build();
+        grade.giveId();
+        student.getListOfGrades().add(grade);
+        datastore.save(student);
+        String newId = String.valueOf(grade.getId());
+        return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+"/"+newId)).entity(grade).build();
+    }
+
+    @Path("/{id}")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getStudent(@PathParam("index") int index, @PathParam("id") int id) {
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        Grade grade = student.getListOfGrades().get(id);
+        return Response.ok(grade).build();
     }
 
     @Path("/{index}")
@@ -83,11 +87,12 @@ public class StudentResource {
 //    @Path("/{index}/grades")
 //    @GET
 //    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-//    public List<Grade> getXxXStudentsGrades(@PathParam("index") int index) {
+//    public Response getStudentsGrades(@PathParam("index") int index) {
 //        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
 //        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-//        //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-//        //List<Grade> studentsGrades = student.getListOfGrades();
-//        return student.getListOfGrades();
+//        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+//
+//        List<Grade> studentsGrades = student.getListOfGrades();
+//        return Response.ok(studentsGrades).build();
 //    }
 }

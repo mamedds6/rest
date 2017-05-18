@@ -1,9 +1,10 @@
 package resources;
 
-import utilities.DatastoreHandler;
 import model.Grade;
 import model.Student;
+import model.Course;
 import org.mongodb.morphia.Datastore;
+import utilities.DatastoreHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,8 +20,8 @@ import java.util.List;
  * Created by Darek on 2017-05-04.
  */
 
-@Path("students")
-public class StudentResource {
+@Path("course")
+public class CourseResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public List<Student> getStudents() {
@@ -80,14 +81,15 @@ public class StudentResource {
         return Response.ok(message).build();
     }
 
-//    @Path("/{index}/grades")
-//    @GET
-//    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-//    public List<Grade> getXxXStudentsGrades(@PathParam("index") int index) {
-//        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-//        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-//        //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-//        //List<Grade> studentsGrades = student.getListOfGrades();
-//        return student.getListOfGrades();
-//    }
+    @Path("/{index}/grades")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public Response getXxXStudentsGrades(@PathParam("index") int index) {
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+
+        List<Grade> studentsGrades = student.getListOfGrades();
+        return Response.ok(studentsGrades).build();
+    }
 }
