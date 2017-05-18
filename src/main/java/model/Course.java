@@ -1,6 +1,7 @@
 package model;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
@@ -14,10 +15,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * Created by Darek on 2017-05-04.
  */
 
-@Entity
+@Embedded
 @XmlRootElement
 public class Course {
-    @Id
+    //@Id
     //@XmlJavaTypeAdapter(ObjectIdJaxbAdapter.class)
     private ObjectId id;
     //@Indexed(name = "title", unique = true)

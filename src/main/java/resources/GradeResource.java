@@ -38,6 +38,9 @@ public class GradeResource {
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
         grade.giveId();
         student.getListOfGrades().add(grade);
+ //       int iii = student.getListOfGrades().indexOf(grade); /// jakby co!!!!!!!!!!!!!!!!!!!11
+ //       student.getListOfGrades().get(iii).setId(iii);
+        datastore.save(grade);
         datastore.save(student);
         String newId = String.valueOf(grade.getId());
         return Response.created(URI.create(uriInfo.getAbsolutePath().toString()+"/"+newId)).entity(grade).build();
@@ -50,7 +53,8 @@ public class GradeResource {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-        Grade grade = student.getListOfGrades().get(id);
+        Grade grade = datastore.find(Grade.class).field("id").equal(id).get();
+        if(grade == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
         return Response.ok(grade).build();
     }
 
@@ -71,17 +75,33 @@ public class GradeResource {
         return Response.ok(student).build();
     }
 
-    @Path("/{index}")
+    @Path("/{id}")
     @DELETE
     @Produces({MediaType.TEXT_PLAIN})
-    public Response deleteStudent(@PathParam("index") int index) {
+    public Response deleteStudent(@PathParam("id") int id) {
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        //Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        Grade grade = datastore.createQuery(Grade.class).field("id").equal(id).get();
+        datastore.delete(grade);
+        String message = "Grade " + id + " deleted";
+        return Response.ok(message).build();
+    }
+    @Path("/a")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public List<Grade> getgs(@PathParam("index") int index) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-        if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-
-        datastore.delete(student);
-        String message = "Student " + index + " deleted";
-        return Response.ok(message).build();
+        return student.getListOfGrades();
+    }
+    @Path("/b")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public List<Grade> getaa() {
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+         //= datastore.createQuery(Student.class).field("index").equal(index).get();
+        return datastore.find(Grade.class).asList();
     }
 
 //    @Path("/{index}/grades")

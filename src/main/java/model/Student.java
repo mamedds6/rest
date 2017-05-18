@@ -2,10 +2,7 @@ package model;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
+import org.mongodb.morphia.annotations.*;
 import utilities.DatastoreHandler;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,7 +28,7 @@ public class Student {
     private String firstName;
     private String lastName;
     private Date dateOfBirth;
-    @Embedded
+    //@Reference
     private List<Grade> grades;
 
     public Student() { }

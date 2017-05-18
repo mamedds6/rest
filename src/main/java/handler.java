@@ -28,7 +28,7 @@ public class handler {
         ResourceConfig config = new ResourceConfig().packages("resources");
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config);
         server.start();
-        //System.out.println(String.valueOf(datastore.find(Grade.class).order("-id").get().getId()));
+        System.out.println(String.valueOf(datastore.find(Grade.class).order("-id").get().getId()));
         //System.out.println(String.valueOf(datastore.find(Student.class).order("-grades").order("-id").get().getListOfGrades().get));
 
     }
