@@ -1,6 +1,23 @@
 package model;
 
+import org.bson.types.ObjectId;
+import org.glassfish.jersey.linking.Binding;
+import org.glassfish.jersey.linking.InjectLink;
+import org.glassfish.jersey.linking.InjectLinks;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
+import resources.StudentResource;
+import utilities.DatastoreHandler;
+
+import javax.ws.rs.core.Link;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,24 +28,50 @@ import java.util.List;
  * Created by Darek on 2017-05-04.
  */
 
+@Entity("students")
 @XmlRootElement
 public class Student {
+    @Id
+    @XmlTransient
+    private ObjectId id;
+    @Indexed(name = "index", unique = true)
     private int index;
     private String firstName;
     private String lastName;
     private Date dateOfBirth;
+    @Embedded
     private List<Grade> grades;
 
-    public Student() {
-        this.grades = new ArrayList<>();
-    }
+    @InjectLinks({
+            //@InjectLink(resource = StudentResource.class, rel = "self"),
+            //@InjectLink(resource = resources.Students.class, rel = "parent"),
+            @InjectLink(
+                    resource = StudentResource.class,
+                    method = "getStudent",
+                    style = InjectLink.Style.ABSOLUTE,
+                    bindings = @Binding(name = "index", value = "${instance.index}"),
+                    rel = "self"
+            )
+    })
+    @XmlElement(name="link")
+    @XmlElementWrapper(name = "links")
+    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+    List<Link> links;
+
+    public Student() { this.grades = new ArrayList<>();}
 
     public Student(int index, String firstName, String lastName, Date dateOfBirth) {
-        this.index = index;
+        this.index = index; //giveIndex();
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.grades = new ArrayList<>();
+    }
+
+    public void giveIndex() {
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        int maxIndex = datastore.find(Student.class).order("-index").get().getIndex();
+        index = 1 + maxIndex;
     }
 
     public int getIndex() {
