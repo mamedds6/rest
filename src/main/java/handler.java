@@ -1,4 +1,5 @@
 import model.Grade;
+import org.glassfish.jersey.linking.DeclarativeLinkingFeature;
 import utilities.DatastoreHandler;
 import model.Student;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -20,12 +21,12 @@ public class handler {
     public static void main(String[] args) throws IOException {
         DatastoreHandler datastoreHandler = DatastoreHandler.getInstance();
         Datastore datastore = datastoreHandler.getDatastore();
+
         datastoreHandler.fillDatastore();
 
         System.out.println("MongoDB OK");
-
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(8080).build();
-        ResourceConfig config = new ResourceConfig().packages("resources");
+        ResourceConfig config = new ResourceConfig().packages("resources").register(DeclarativeLinkingFeature.class);
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config);
         server.start();
         //System.out.println(String.valueOf(datastore.find(Grade.class).order("-id").get().getGradeId()));

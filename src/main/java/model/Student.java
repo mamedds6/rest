@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.bson.types.ObjectId;
 import org.glassfish.jersey.linking.Binding;
 import org.glassfish.jersey.linking.InjectLink;
@@ -38,25 +39,34 @@ public class Student {
     private int index;
     private String firstName;
     private String lastName;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,
+            pattern="yyyy-MM-dd", timezone="CET")
     private Date dateOfBirth;
     @Embedded
     private List<Grade> grades;
 
-    @InjectLinks({
-            //@InjectLink(resource = StudentResource.class, rel = "self"),
-            //@InjectLink(resource = resources.Students.class, rel = "parent"),
-            @InjectLink(
-                    resource = StudentResource.class,
-                    method = "getStudent",
-                    style = InjectLink.Style.ABSOLUTE,
-                    bindings = @Binding(name = "index", value = "${instance.index}"),
-                    rel = "self"
-            )
-    })
-    @XmlElement(name="link")
-    @XmlElementWrapper(name = "links")
-    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
-    List<Link> links;
+//    @InjectLinks({
+//            @InjectLink(resource = StudentResource.class, rel = "parent"),
+//            //@InjectLink(resource = resources.Students.class, rel = "parent"),
+//            @InjectLink(
+//                    resource = StudentResource.class,
+//                    method = "getStudent",
+//                    style = InjectLink.Style.ABSOLUTE,
+//                    bindings = @Binding(name = "index", value = "${instance.index}"),
+//                    rel = "self"
+//            ),
+//            @InjectLink(
+//                    resource = StudentResource.class,
+//                    method = "getStudentsGrades",
+//                    style = InjectLink.Style.ABSOLUTE,
+//                    bindings = @Binding(name = "index", value = "${instance.index}"),
+//                    rel = "grades"
+//            )
+//    })
+//    @XmlElement(name="link")
+//    @XmlElementWrapper(name = "links")
+//    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+//    List<Link> links;
 
     public Student() { this.grades = new ArrayList<>();}
 

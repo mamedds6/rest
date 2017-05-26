@@ -58,10 +58,13 @@ public class StudentResource {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+        //if(updStudent.getFirstName() != null) { student.setFirstName(updStudent.getFirstName()); }
+        //if(updStudent.getLastName() != null) { student.setLastName(updStudent.getLastName()); }
+        //if(updStudent.getDateOfBirth() != null) { student.setDateOfBirth(updStudent.getDateOfBirth()); }
+        student.setFirstName(updStudent.getFirstName());
+        student.setLastName(updStudent.getLastName());
+        student.setDateOfBirth(updStudent.getDateOfBirth());
 
-        if(updStudent.getFirstName() != null) { student.setFirstName(updStudent.getFirstName()); }
-        if(updStudent.getLastName() != null) { student.setLastName(updStudent.getLastName()); }
-        if(updStudent.getDateOfBirth() != null) { student.setDateOfBirth(updStudent.getDateOfBirth()); }
         datastore.delete(student);
         datastore.save(student);
         return Response.ok(student).build();

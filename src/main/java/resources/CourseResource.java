@@ -35,7 +35,7 @@ public class CourseResource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response postcourse( Course course, @Context UriInfo uriInfo) {
+    public Response postCourse( Course course, @Context UriInfo uriInfo) {
         course.giveCourseId();
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         datastore.save(course);
@@ -61,9 +61,11 @@ public class CourseResource {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Course course = datastore.createQuery(Course.class).field("courseId").equal(courseId).get();
         if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+//        if(updCourse.getTitle() != null) { course.setTitle(updCourse.getTitle()); }
+//        if(updCourse.getInstructor() != null) { course.setInstructor(updCourse.getInstructor()); }
+        course.setTitle(updCourse.getTitle());
+        course.setInstructor(updCourse.getInstructor());
 
-        if(updCourse.getTitle() != null) { course.setTitle(updCourse.getTitle()); }
-        if(updCourse.getInstructor() != null) { course.setInstructor(updCourse.getInstructor()); }
         datastore.delete(course);
         datastore.save(course);
         return Response.ok(course).build();

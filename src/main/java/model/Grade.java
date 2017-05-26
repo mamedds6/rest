@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Reference;
 
@@ -18,6 +19,8 @@ public class Grade {
     private static int counter = 1; //hehe // no bo ciezko wyciagnac max wartosc gradeId...
     private int gradeId;
     private double value;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,
+            pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
     @Reference
     private Course course;

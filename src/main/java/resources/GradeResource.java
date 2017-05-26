@@ -97,8 +97,10 @@ public class GradeResource {
         if(grade == null)
             return Response.noContent().build();
         else {
-            if(updGrade.getValue() != 0) { grade.setValue(updGrade.getValue()); }
-            if(updGrade.getDate() != null) { grade.setDate(updGrade.getDate()); }
+            grade.setValue(updGrade.getValue());
+            grade.setDate(updGrade.getDate());
+            //if(updGrade.getValue() != 0) { grade.setValue(updGrade.getValue()); }
+            //if(updGrade.getDate() != null) { grade.setDate(updGrade.getDate()); }
         }
         datastore.delete(student);
         datastore.save(student);
