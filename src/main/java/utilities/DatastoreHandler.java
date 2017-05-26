@@ -9,7 +9,9 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Darek on 2017-05-17.
@@ -57,5 +59,21 @@ public class DatastoreHandler {
         datastore.save(courseB);
         datastore.save(courseC);
         datastore.save(courseD);
+    }
+
+    public void getGradesCounter () {
+        List<Student> allStudents = datastore.find(Student.class).asList();
+        for (Student stud:allStudents) {
+            List<Grade> allGrades = stud.getListOfGrades();
+            for (Grade grad:allGrades) {
+                if(grad.getGradeId()>Grade.getCounter()) {
+                    Grade.setCounter(grad.getGradeId());
+                }
+            }
+//        List<Grade> grades = new ArrayList<>();
+//        List<Student> allStudents = datastore.find(Student.class).asList();
+//        for (Student stud:allStudents) {
+//            grades.addAll(stud.getListOfGrades());
+        }
     }
 }

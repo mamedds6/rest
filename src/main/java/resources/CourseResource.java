@@ -84,7 +84,7 @@ public class CourseResource {
             List<Grade> allGrades = stud.getListOfGrades();
             if(allGrades==null) continue;
             for (Grade grad:allGrades) {
-                if(grad.getCourse().getCourseId() == courseId)
+                if(grad.getCourseId() == courseId)
                 {
                     stud.getListOfGrades().remove(grad);
                     datastore.delete(stud);
@@ -92,12 +92,57 @@ public class CourseResource {
                 }
             }
         }
-
         datastore.delete(course);
-
+//
+//        List<Student> allStudents2 = datastore.find(Student.class).asList();
+//        for (Student stud:allStudents2) {
+//            List<Grade> allGrades = stud.getListOfGrades();
+//            if(allGrades==null) continue;
+//            for (Grade grad:allGrades) {
+//                if(grad.getCourse().getCourseId() == courseId)
+//                {
+//                    stud.getListOfGrades().remove(grad);
+//                    datastore.delete(stud);
+//                    datastore.save(stud);
+//                }
+//            }
+//        }
+//        datastore.delete(course);
+//
+//        List<Student> allStudents3 = datastore.find(Student.class).asList();
+//        for (Student stud:allStudents3) {
+//            List<Grade> allGrades = stud.getListOfGrades();
+//            if(allGrades==null) continue;
+//            for (Grade grad:allGrades) {
+//                if(grad.getCourse().getCourseId() == courseId)
+//                {
+//                    stud.getListOfGrades().remove(grad);
+//                    datastore.delete(stud);
+//                    datastore.save(stud);
+//                }
+//            }
+//        }
+//        datastore.delete(course);
         String message = "Course " + course.getTitle() + " deleted";
         return Response.ok(message).build();
     }
+
+    //stary students/1/courses/1/grades
+//    @GET
+//    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+//    public Response getGrades(@PathParam("index") int index, @PathParam("courseId") int courseId) {
+//        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+//        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+//        if(student.getListOfGrades()==null) { return Response.noContent().build();}
+//        List<Grade> allGrades = student.getListOfGrades();
+//        List<Grade> specificGrades = new ArrayList<>();
+//        for (Grade grade:allGrades) {
+//            if(grade.getCourse().getCourseId() == courseId)
+//                specificGrades.add(grade);
+//        }
+//        if(specificGrades==null) { return Response.noContent().build();}
+//        return Response.ok(specificGrades).build();
+//    }
 
     @Path("/{courseId}/grades") ///// DO POPRAWIENIA
     @GET

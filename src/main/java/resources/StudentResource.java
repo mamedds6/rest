@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -83,14 +84,23 @@ public class StudentResource {
         return Response.ok(message).build();
     }
 
-    @Path("/{index}/grades")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<Grade> getStudentsGrades(@PathParam("index") int index) {
-        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
-        //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-        //List<Grade> studentsGrades = student.getListOfGrades();
-        return student.getListOfGrades();
-    }
+    //jest w gradeResource
+//    @Path("/{index}/grades")
+//    @GET
+//    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+//    public List<Grade> getStudentsGrades(@PathParam("index") int index) {
+//        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+//        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+//        //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
+//        //List<Grade> studentsGrades = student.getListOfGrades();
+//        return student.getListOfGrades();
+//    }
 }
+
+//@QueryParam("firstName") String firstName,
+//@QueryParam("lastName") String lastName,
+//    @DefaultValue("0") @QueryParam("direction") int direction,
+//    @QueryParam("indexQuery") int index,
+//    @QueryParam("dateOfBirthQuery") Date date,
+//    @QueryParam("firstNameQuery") String firstNameQuery,
+//    @QueryParam("lastNameQuery") String lastNameQuery

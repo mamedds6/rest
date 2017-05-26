@@ -40,6 +40,7 @@ public class Course {
     public void giveCourseId() {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         int maxId = datastore.find(Course.class).order("-courseId").get().getCourseId();
+        //wywala sie jak nie ma wczesniej kursu w bazie
         courseId = 1 + maxId;
     }
 
