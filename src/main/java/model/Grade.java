@@ -1,9 +1,11 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Reference;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.time.Instant;
 import java.util.Date;
 
@@ -15,12 +17,17 @@ import java.util.Date;
 @XmlRootElement
 public class Grade {
     private static final double[] gradingScale = new double[]{2.0, 3.0, 3.5, 4.0, 4.5, 5.0};
-    private static int counter = 1; //hehe // no bo ciezko wyciagnac max wartosc gradeId...
+    private static int counter = 0; //hehe // no bo ciezko wyciagnac max wartosc gradeId...
     private int gradeId;
     private double value;
+    @JsonFormat(shape=JsonFormat.Shape.STRING,
+            pattern="yyyy-MM-dd", timezone="CET")
     private Date date;
+    //@XmlTransient //niepotrzebnie?
+    private int courseId;
     @Reference
     private Course course;
+
 
     public Grade() {
         date = Date.from(Instant.now());
@@ -30,10 +37,11 @@ public class Grade {
         this.value = value;
         this.date = date;
         this.course = course;
+        this.courseId = course.getCourseId(); //śmiesznie ale to jest chyba tylko uzyta przy fillDatastore so...
     }
     public void giveId() {
-        gradeId = counter;
         counter++;
+        gradeId = counter;
     }
 
     public boolean validateValue() {
@@ -56,6 +64,9 @@ public class Grade {
     public Course getCourse() {
         return course;
     }
+    public int getCourseId() {
+        return courseId;
+    }
 
     public void setGradeId(int gradeId) {
         this.gradeId = gradeId;
@@ -68,5 +79,16 @@ public class Grade {
     }
     public void setCourse(Course course) {
         this.course = course;
+    }
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public static int getCounter() {
+        return counter;
+    }
+
+    public static void setCounter(int counter) {
+        Grade.counter = counter;
     }
 }
