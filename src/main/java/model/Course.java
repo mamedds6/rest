@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * Created by Darek on 2017-05-04.
  */
 
-@Entity
+@Entity("courses")
 @XmlRootElement
 public class Course {
     @Id
@@ -28,7 +28,11 @@ public class Course {
     private String instructor;
 
     public Course() {
-        //this.id = new ObjectId();
+        this.id = new ObjectId();
+    }
+    public Course(int courseId) {
+        this.id = new ObjectId();
+        this.courseId = courseId;
     }
     public Course(int courseId, String title, String instructor) {
         this.id = new ObjectId();

@@ -1,5 +1,6 @@
 package resources;
 
+import model.Course;
 import utilities.DatastoreHandler;
 import model.Grade;
 import model.Student;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Darek on 2017-05-04.
@@ -24,9 +26,37 @@ import java.util.List;
 public class StudentResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<Student> getStudents() {
+    public List<Student> getStudents(@QueryParam("firstName") String firstName,
+                                     @QueryParam("lastName") String lastName,
+                                     @QueryParam("index") int index,
+                                     @QueryParam("born") Date born,
+                                     @QueryParam("bornBefore") Date bornBefore,
+                                     @QueryParam("bornAfter") Date bornAfter,
+                                     @QueryParam("course") Course course){
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         List<Student> students = datastore.find(Student.class).order("index").asList();
+
+        if (index!=0)
+        students = students.stream().filter(student -> student.getIndex() == index).collect(Collectors.toList());
+
+        if(firstName!=null)
+        students = students.stream().filter(student -> student.getFirstName().equals(firstName)).collect(Collectors.toList());
+
+        if(lastName!=null)
+        students = students.stream().filter(student -> student.getLastName().equals(lastName)).collect(Collectors.toList());
+
+        if(born!=null)
+            students = students.stream().filter(student -> student.getDateOfBirth().equals(born)).collect(Collectors.toList());
+
+        if(bornAfter!=null)
+            students = students.stream().filter(student -> student.getDateOfBirth().after(bornAfter)).collect(Collectors.toList());
+
+        if(bornBefore!=null)
+            students = students.stream().filter(student -> student.getDateOfBirth().after(bornBefore)).collect(Collectors.toList());
+
+        //notepadif(course!=null)
+           // students = students.stream().filter(student -> student)
+
         return students;
     }
 

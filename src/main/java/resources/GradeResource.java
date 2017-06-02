@@ -42,7 +42,7 @@ public class GradeResource {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
         if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-        Course course = datastore.createQuery(Course.class).field("courseId").equal(grade.getCourseId()).get();
+        Course course = datastore.createQuery(Course.class).field("courseId").equal(grade.getCourse().getCourseId()).get();
         if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
         //Course course = datastore.createQuery(Course.class).field("title").equal("BHP").get();
         grade.giveId();
@@ -103,9 +103,12 @@ public class GradeResource {
         else {
             grade.setValue(updGrade.getValue());
             grade.setDate(updGrade.getDate());
-            Course course = datastore.createQuery(Course.class).field("courseId").equal(updGrade.getCourseId()).get();
-            if(course == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
-            grade.setCourseId(updGrade.getCourseId());
+            Course course = datastore.createQuery(Course.class).field("courseId").equal(updGrade.getCourse().getCourseId()).get();
+            if(course == null) {
+                return Response.noContent().status(Response.Status.NOT_FOUND).build();
+            }
+            else
+            //grade.getCourse().setCourseId(TUTUTTUTU nie z grade tylko z parametru obok);// setCourseId(updGrade.getCourseId());
             grade.setCourse(course);
             //if(updGrade.getValue() != 0) { grade.setValue(updGrade.getValue()); }
             //if(updGrade.getDate() != null) { grade.setDate(updGrade.getDate()); }

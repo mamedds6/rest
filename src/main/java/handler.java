@@ -29,7 +29,7 @@ public class handler {
         System.out.println("MongoDB OK");
         DateParamConverterProvider dateParamConverterProvider = new DateParamConverterProvider("yyyy-MM-dd");
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(8080).build();
-        ResourceConfig config = new ResourceConfig().packages("resources").register(DeclarativeLinkingFeature.class).register(dateParamConverterProvider) ;
+        ResourceConfig config = new ResourceConfig().packages("resources").register(dateParamConverterProvider).register(DeclarativeLinkingFeature.class) ;
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config);
         server.start();
         //System.out.println(String.valueOf(Grade.getCounter()));

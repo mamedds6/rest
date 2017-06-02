@@ -10,6 +10,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
+import resources.GradeResource;
 import resources.StudentResource;
 import utilities.DatastoreHandler;
 
@@ -48,29 +49,38 @@ public class Student {
 //    @InjectLinks({
 //            @InjectLink(resource = StudentResource.class, rel = "parent"),
 //            //@InjectLink(resource = resources.Students.class, rel = "parent"),
-//            @InjectLink(
-//                    resource = StudentResource.class,
-//                    method = "getStudent",
-//                    style = InjectLink.Style.ABSOLUTE,
+////            @InjectLink(
+////                    resource = StudentResource.class,
+////                    method = "getStudent",
+////                    style = InjectLink.Style.ABSOLUTE,
+////                    bindings = @Binding(name = "index", value = "${instance.index}"),
+////                    rel = "self"
+////            ),
+////            @InjectLink(
+////                    resource = StudentResource.class,
+////                    method = "getStudentsGrades",
+////                    style = InjectLink.Style.ABSOLUTE,
+////                    bindings = @Binding(name = "index", value = "${instance.index}"),
+////                    rel = "grades"
+////            )
+//            @InjectLink(resource = StudentResource.class,
 //                    bindings = @Binding(name = "index", value = "${instance.index}"),
-//                    rel = "self"
-//            ),
-//            @InjectLink(
-//                    resource = StudentResource.class,
-//                    method = "getStudentsGrades",
-//                    style = InjectLink.Style.ABSOLUTE,
-//                    bindings = @Binding(name = "index", value = "${instance.index}"),
-//                    rel = "grades"
-//            )
+//                    rel = "self"),
+//            @InjectLink(resource = GradeResource.class, rel = "grades")
+//
 //    })
 //    @XmlElement(name="link")
 //    @XmlElementWrapper(name = "links")
 //    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
 //    List<Link> links;
 
-    public Student() { this.grades = new ArrayList<>();}
+    public Student() {
+        //this.id = new ObjectId(); //w Coursie pomogło, ale moze tu nie potrzeba
+        this.grades = new ArrayList<>();
+    }
 
     public Student(int index, String firstName, String lastName, Date dateOfBirth) {
+        //this.id = new ObjectId();
         this.index = index; //giveIndex();
         this.firstName = firstName;
         this.lastName = lastName;
