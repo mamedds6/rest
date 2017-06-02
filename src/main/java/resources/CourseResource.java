@@ -18,6 +18,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Darek on 2017-05-04.
@@ -27,9 +28,13 @@ import java.util.List;
 public class CourseResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<Course> getCourses() {
+    public List<Course> getCourses(@QueryParam("instructor") String instructor ) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         List<Course> courses = datastore.find(Course.class).order("courseId").asList();
+
+        if(instructor!=null)
+        courses = courses.stream().filter(course -> course.getInstructor().equals(instructor)).collect(Collectors.toList());
+
         return courses;
     }
 

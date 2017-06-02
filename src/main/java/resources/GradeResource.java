@@ -16,6 +16,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Darek on 2017-05-04.
@@ -25,13 +26,26 @@ import java.util.List;
 public class GradeResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public List<Grade> getStudentsGrades(@PathParam("index") int index) {
+    public List<Grade> getStudentsGrades(@PathParam("index") int index,
+                                         @QueryParam("courseId") int courseId,
+                                         @QueryParam("noteHigher") double noteHigher,
+                                         @QueryParam("noteLower") double noteLower) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        List<Grade> grades = student.getListOfGrades();
         //if(student == null) { return Response.noContent().status(Response.Status.NOT_FOUND).build(); }
         // no powinno byc to
-        //List<Grade> studentsGrades = student.getListOfGrades();
-        return student.getListOfGrades();
+
+        if(courseId!=0)
+            grades = grades.stream().filter(grade -> grade.getCourse().getCourseId() == courseId).collect(Collectors.toList());
+
+        if(noteHigher!=0)
+            grades = grades.stream().filter(grade -> grade.getValue() > noteHigher).collect(Collectors.toList());
+
+        if(noteLower!=0)
+            grades = grades.stream().filter(grade -> grade.getValue() < noteLower).collect(Collectors.toList());
+
+        return grades;
     }
 
     @POST
@@ -58,7 +72,9 @@ public class GradeResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getGrade(@PathParam("index") int index, @PathParam("gradeId") int gradeId) {
-        List<Grade> grades = getStudentsGrades(index);
+        Datastore datastore = DatastoreHandler.getInstance().getDatastore();
+        Student student = datastore.createQuery(Student.class).field("index").equal(index).get();
+        List<Grade> grades = student.getListOfGrades();
         for (Grade grade:grades) {
             if(grade.getGradeId()==gradeId) {
                 return Response.ok(grade).build();

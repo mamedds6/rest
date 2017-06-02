@@ -31,8 +31,7 @@ public class StudentResource {
                                      @QueryParam("index") int index,
                                      @QueryParam("born") Date born,
                                      @QueryParam("bornBefore") Date bornBefore,
-                                     @QueryParam("bornAfter") Date bornAfter,
-                                     @QueryParam("course") Course course){
+                                     @QueryParam("bornAfter") Date bornAfter){
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         List<Student> students = datastore.find(Student.class).order("index").asList();
 
@@ -46,18 +45,16 @@ public class StudentResource {
         students = students.stream().filter(student -> student.getLastName().equals(lastName)).collect(Collectors.toList());
 
         if(born!=null)
+            //System.out.println(born+" "+ students.get(2).getDateOfBirth());
             students = students.stream().filter(student -> student.getDateOfBirth().equals(born)).collect(Collectors.toList());
 
         if(bornAfter!=null)
             students = students.stream().filter(student -> student.getDateOfBirth().after(bornAfter)).collect(Collectors.toList());
 
         if(bornBefore!=null)
-            students = students.stream().filter(student -> student.getDateOfBirth().after(bornBefore)).collect(Collectors.toList());
+            students = students.stream().filter(student -> student.getDateOfBirth().before(bornBefore)).collect(Collectors.toList());
 
-        //notepadif(course!=null)
-           // students = students.stream().filter(student -> student)
-
-        return students;
+       return students;
     }
 
     @POST

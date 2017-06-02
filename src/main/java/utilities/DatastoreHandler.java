@@ -39,9 +39,12 @@ public class DatastoreHandler {
     }
 
     public void fillDatastore () {
-        final Student studentA = new Student(1,"Andrzej", "Adamski", Date.from(Instant.parse(("1993-01-03T10:15:30.00Z"))));
-        final Student studentB = new Student(2,"Barbara", "Bulwa", Date.from(Instant.parse(("1993-08-11T10:15:30.00Z"))));
-        final Student studentC = new Student(3,"Cezary", "Całka", Date.from(Instant.parse(("1993-05-07T10:15:30.00Z"))));
+        final Student studentA = new Student(1,"Andrzej", "Adamski",
+                Date.from(Instant.parse(("1993-01-03T22:00:00.00Z"))));
+        final Student studentB = new Student(2,"Barbara", "Bulwa",
+                Date.from(Instant.parse(("1993-08-11T22:00:00.00Z"))));
+        final Student studentC = new Student(3,"Cezary", "Całka",
+                Date.from(Instant.parse(("1993-05-06T22:00:00.00Z"))));
         final Course courseA = new Course(1,"Algebra", "A.Alfonso");
         final Course courseB = new Course(2,"BHP", "B.Boruch");
         final Course courseC = new Course(3,"Chemia", "C.Curie");
