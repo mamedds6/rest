@@ -1,6 +1,7 @@
 package resources;
 
 import model.Course;
+import org.mongodb.morphia.query.Query;
 import utilities.DatastoreHandler;
 import model.Grade;
 import model.Student;
@@ -35,26 +36,29 @@ public class StudentResource {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
         List<Student> students = datastore.find(Student.class).order("index").asList();
 
+        Query query = datastore.createQuery(Student.class);
+
         if (index!=0)
         students = students.stream().filter(student -> student.getIndex() == index).collect(Collectors.toList());
 
         if(firstName!=null)
-        students = students.stream().filter(student -> student.getFirstName().equals(firstName)).collect(Collectors.toList());
+            query.field("firstName").containsIgnoreCase(firstName);
 
         if(lastName!=null)
         students = students.stream().filter(student -> student.getLastName().equals(lastName)).collect(Collectors.toList());
 
         if(born!=null)
             //System.out.println(born+" "+ students.get(2).getDateOfBirth());
-            students = students.stream().filter(student -> student.getDateOfBirth().equals(born)).collect(Collectors.toList());
+            query.field("dateOfBirth").equal(born);
 
         if(bornAfter!=null)
-            students = students.stream().filter(student -> student.getDateOfBirth().after(bornAfter)).collect(Collectors.toList());
+            query.field("dateOfBirth").greaterThan(bornAfter);
 
         if(bornBefore!=null)
-            students = students.stream().filter(student -> student.getDateOfBirth().before(bornBefore)).collect(Collectors.toList());
+            query.field("dateOfBirth").lessThan(bornBefore);
 
-       return students;
+        students = query.asList();
+        return students;
     }
 
     @POST

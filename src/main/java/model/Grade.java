@@ -1,13 +1,23 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.glassfish.jersey.linking.InjectLink;
+import org.glassfish.jersey.linking.InjectLinks;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Reference;
+import resources.GradeResource;
+import resources.StudentResource;
+import resources.CourseResource;
 
+import javax.ws.rs.core.Link;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Darek on 2017-05-04.
@@ -28,6 +38,15 @@ public class Grade {
     @Reference
     private Course course;
 
+//    @InjectLinks({
+//            @InjectLink(resource = GradeResource.class, rel = "parent"),
+//            @InjectLink(resource = GradeResource.class, method = "getGrade", rel = "self"),
+//            //@InjectLink(resource = CourseResource.class, rel = "course")
+//    })
+//    @XmlElement(name="link")
+//    @XmlElementWrapper(name = "links")
+//    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+//    List<Link> links;
 
     public Grade() {
         date = Date.from(Instant.now());

@@ -46,33 +46,15 @@ public class Student {
     @Embedded
     private List<Grade> grades;
 
-//    @InjectLinks({
-//            @InjectLink(resource = StudentResource.class, rel = "parent"),
-//            //@InjectLink(resource = resources.Students.class, rel = "parent"),
-////            @InjectLink(
-////                    resource = StudentResource.class,
-////                    method = "getStudent",
-////                    style = InjectLink.Style.ABSOLUTE,
-////                    bindings = @Binding(name = "index", value = "${instance.index}"),
-////                    rel = "self"
-////            ),
-////            @InjectLink(
-////                    resource = StudentResource.class,
-////                    method = "getStudentsGrades",
-////                    style = InjectLink.Style.ABSOLUTE,
-////                    bindings = @Binding(name = "index", value = "${instance.index}"),
-////                    rel = "grades"
-////            )
-//            @InjectLink(resource = StudentResource.class,
-//                    bindings = @Binding(name = "index", value = "${instance.index}"),
-//                    rel = "self"),
-//            @InjectLink(resource = GradeResource.class, rel = "grades")
-//
-//    })
-//    @XmlElement(name="link")
-//    @XmlElementWrapper(name = "links")
-//    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
-//    List<Link> links;
+    @InjectLinks({
+            @InjectLink(resource = StudentResource.class, rel = "parent"),
+            @InjectLink(resource = StudentResource.class, method = "getStudent", rel = "self"),
+            @InjectLink(resource = GradeResource.class, rel = "grades")
+    })
+    @XmlElement(name="link")
+    @XmlElementWrapper(name = "links")
+    @XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+    List<Link> links;
 
     public Student() {
         //this.id = new ObjectId(); //w Coursie pomogło, ale moze tu nie potrzeba
