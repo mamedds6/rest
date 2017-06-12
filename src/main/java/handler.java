@@ -1,5 +1,6 @@
 import model.Grade;
 import org.glassfish.jersey.linking.DeclarativeLinkingFeature;
+import utilities.CustomHeaders;
 import utilities.DatastoreHandler;
 import model.Student;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -29,7 +30,8 @@ public class handler {
         System.out.println("MongoDB OK");
         DateParamConverterProvider dateParamConverterProvider = new DateParamConverterProvider("yyyy-MM-dd");
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(8080).build();
-        ResourceConfig config = new ResourceConfig().packages("resources").register(dateParamConverterProvider).register(DeclarativeLinkingFeature.class) ;
+        ResourceConfig config = new ResourceConfig().packages("resources").register(dateParamConverterProvider)
+                .register(DeclarativeLinkingFeature.class).register(CustomHeaders.class);
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config);
         server.start();
         //System.out.println(String.valueOf(Grade.getCounter()));

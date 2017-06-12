@@ -34,18 +34,20 @@ public class StudentResource {
                                      @QueryParam("bornBefore") Date bornBefore,
                                      @QueryParam("bornAfter") Date bornAfter){
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        List<Student> students = datastore.find(Student.class).order("index").asList();
+        List<Student> students;// = datastore.find(Student.class).order("index").asList();
 
         Query query = datastore.createQuery(Student.class);
 
         if (index!=0)
-        students = students.stream().filter(student -> student.getIndex() == index).collect(Collectors.toList());
+            query.field("index").equal(index);
+        //students = students.stream().filter(student -> student.getIndex() == index).collect(Collectors.toList());
 
         if(firstName!=null)
             query.field("firstName").containsIgnoreCase(firstName);
 
         if(lastName!=null)
-        students = students.stream().filter(student -> student.getLastName().equals(lastName)).collect(Collectors.toList());
+            query.field("lastName").containsIgnoreCase(lastName);
+        //students = students.stream().filter(student -> student.getLastName().equals(lastName)).collect(Collectors.toList());
 
         if(born!=null)
             //System.out.println(born+" "+ students.get(2).getDateOfBirth());

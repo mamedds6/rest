@@ -28,13 +28,19 @@ import java.util.stream.Collectors;
 public class CourseResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public List<Course> getCourses(@QueryParam("instructor") String instructor ) {
+    public List<Course> getCourses(@QueryParam("instructor") String instructor, @QueryParam("title") String title ) {
         Datastore datastore = DatastoreHandler.getInstance().getDatastore();
-        List<Course> courses = datastore.find(Course.class).order("courseId").asList();
+        //List<Course> courses = datastore.find(Course.class).order("courseId").asList();
 
+        Query query = datastore.createQuery(Course.class);
         if(instructor!=null)
-        courses = courses.stream().filter(course -> course.getInstructor().equals(instructor)).collect(Collectors.toList());
+            query.field("instructor").containsIgnoreCase(instructor);
+//        courses = courses.stream().filter(course -> course.getInstructor().equals(instructor)).collect(Collectors.toList());
 
+        if(title!=null)
+            query.field("title").containsIgnoreCase(title);
+
+        List<Course> courses = query.asList();
         return courses;
     }
 
